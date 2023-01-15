@@ -50,7 +50,7 @@ class Content(models.Model):
     times_played = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        minister__ = Minister.objects.get(id=self.author.id)
+        minister__ = Minister.objects.get(id=self.minister.id)
         minister__.publish += 1
         minister__.save()
         return super().save(*args, **kwargs)
