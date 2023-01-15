@@ -131,7 +131,7 @@ STATIC_URL = 'static/'
 #STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'), )
-django_heroku.setings(locals())
+django_heroku.settings(locals())
 
 #MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
