@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import authentication, permissions
 from django.contrib.auth.models import User
+from .randomizing import one_random_content_from_tag
 from .models import Minister, Events, Content
-from .serializers import ContentSerializer, AuthorSerializer, EventSerializer
+from .serializers import ContentSerializer, AuthorSerializer, EventSerializer, HomePageMinisters
 
 
 class ListUsers(APIView):
@@ -22,34 +23,60 @@ class ListUsers(APIView):
         return Response(data)
 
 
+
 class TrendingList(APIView):
     '''
-    Home page returns latest content, trending content(by number of plays), and top ministers by number of plays
+    Home page returns the latest content, trending content(by number of plays), and top ministers by number of plays
     '''
 
     def get(self, request, format=None):
         data = {}
 
         # fetching for newest content top 2
-        latest_6 = Content.objects.order_by('-date_created')[:2]
+        latest_6 = Content.objects.order_by('-date_created')[:9]
 
         # fetching for contents by the amount of listens
         most_listened = Content.objects.order_by('times_played')
 
+        # For Quick picks
+        '''
+                this gets one content from each tag and fetches them out in a shuffled method
+            '''
+        quick_pick_tag = Events.objects.all()
+        quick_pick_content = Content.objects.all()
+
+        quick_pick = one_random_content_from_tag(quick_pick_tag,quick_pick_content)
+        quick_pick = ContentSerializer(quick_pick, many=True)
+        data['quick picks'] = quick_pick.data
+
         # fetching for most listened Authors
         minister = Minister.objects.order_by('times_played')
+
+        # fetching all Ministers
+        ministers = Minister.objects.all()
 
         # serializing all the data
         minister = AuthorSerializer(minister, many=True)
         serializer = ContentSerializer(latest_6, many=True)
         most_listened = ContentSerializer(most_listened, many=True)
+        ministers = HomePageMinisters(ministers, many=True)
 
         # adding them to the data dictionary
         data['latest'] = serializer.data
         data['most_listened'] = most_listened.data
         data['top ministers'] = minister.data
+        data['All Ministers'] = ministers.data
         return Response(data)
 
+
+class MinistersPage(APIView):
+    '''Returns all Ministers, the Ministers content, and other authors'''
+
+    def get(self, request, format=None):
+        data = {}
+        ministers = Minister.objects.all()
+        ministers = AuthorSerializer(ministers)
+        data['All Ministers'] = ministers.data
 
 class MinisterPage(APIView):
     '''Retruns a specific author, the authors content, and other authors'''
@@ -82,7 +109,7 @@ class MinisterPage(APIView):
 
         # adding them to the data dictionary
         data['main author'] = Main_minister.data
-        data['author Content'] = Minister_content.data
+        data['author Content'] = minister_content.data
         data['other author'] = Other_authors.data
 
         return Response(data)

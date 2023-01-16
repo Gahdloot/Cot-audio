@@ -55,9 +55,12 @@ class Content(models.Model):
         minister__.save()
         return super().save(*args, **kwargs)
 
+    @property
     def event_name(self):
         return f'{self.tag.name}'
 
+
+    @property
     def minister_name(self):
         return f'{self.minister.name}'
 

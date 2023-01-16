@@ -16,6 +16,12 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ['name', 'content', 'picture', 'times_played', 'description', 'publish']
 
 
+class HomePageMinisters(serializers.ModelSerializer):
+    class Meta:
+        model = Minister
+        fields = ['name', 'id', 'picture']
+
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Events
