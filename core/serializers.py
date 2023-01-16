@@ -7,13 +7,13 @@ from rest_framework import serializers
 class ContentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Content
-        fields = ['minister_name', 'name', 'content', 'image', 'event_name', 'times_played']
+        fields = ['id', 'minister_name', 'name', 'content', 'image', 'event_name', 'times_played']
 
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Minister
-        fields = ['name', 'content', 'picture', 'times_played', 'description', 'publish']
+        fields = ['id', 'name', 'content', 'picture', 'times_played', 'description', 'publish']
 
 
 class HomePageMinisters(serializers.ModelSerializer):

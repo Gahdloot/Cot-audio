@@ -13,9 +13,6 @@ def one_random_content_from_tag(tag, content) -> list:
     new_list = []
     def check_data(x):
         return x.name
-    # print('tag ====', tags)
-    # print('conttent====', content)
-    # print(map(check_data, tag))
     for tag in tags:
         for cont in content:
             if tag.name == cont.event_name:

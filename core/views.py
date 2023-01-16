@@ -93,7 +93,7 @@ class MinisterPage(APIView):
         #print(type(Main_author.name))
 
         # getting all the authors content, quersyset by author's name
-        minister_content = Content.objects.filter(author__name=Main_minister.name)
+        minister_content = Content.objects.filter(minister__name=Main_minister.name)
 
         # serializing all authors contents from the author
         minister_content = ContentSerializer(minister_content, many=True)
@@ -136,7 +136,7 @@ class ContentPage(APIView):
         data['main_content'] = Main_content.data
 
         # Quering the Content dd while fitering the for the same tag as main event
-        other_Content = Content.objects.filter(tag__name=content_tag)
+        other_Content = Content.objects.filter(tag__name=content_tag).exclude(id=id)
 
         # Serializing other content
         other_Content = ContentSerializer(other_Content, many=True)
