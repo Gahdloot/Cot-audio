@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from .randomizing import one_random_content_from_tag
 from .models import Minister, Events, Content
 from .serializers import ContentSerializer, AuthorSerializer, EventSerializer, HomePageMinisters
+from django.db.models import Q
 
 
 class ListUsers(APIView):
@@ -116,8 +117,12 @@ class MinisterPage(APIView):
 
 
 class ContentPage(APIView):
-    '''The Content page this to view the content in full with description
+    '''The Content page this to view the content in full, with description
         the contents also suggests similar content based on tags
+    '''
+
+    '''
+    The post method is to increment times played on content
     '''
 
     def get(self, request, id, format=None):
@@ -128,6 +133,7 @@ class ContentPage(APIView):
 
         # creating a varible to track the tag name of the content
         content_tag = Main_content.tag.name
+        data['content_tag'] = content_tag
 
         # Serializing main content
         Main_content = ContentSerializer(Main_content)
@@ -147,6 +153,29 @@ class ContentPage(APIView):
         return Response(data)
 
 
+    def post(self, request, id, format=None):
+        data = {}
+        # querying main content by ID
+        Main_content = Content.objects.get(id=id)
+
+        # creating a variable to track the times played of the content
+        content_tag = Main_content.tag.times_played
+        main_content_times_played = Main_content.times_played
+        minister_profile_times_played = Main_content.minister.times_played
+
+
+        # incrementing the times played
+        content_tag += 1
+        main_content_times_played += 1
+        minister_profile_times_played += 1
+
+        Main_content.save()
+
+        data['message'] = 'success'
+
+        return Response(data)
+
+
 class Explore(APIView):
     '''The Tag Page returns a dictionary of name of all tags
     '''
@@ -160,7 +189,7 @@ class Explore(APIView):
 
 
 class TagPage(APIView):
-    '''The Tag Page returns a dictionary of name of all tags
+    '''The Tag Page returns a dictionary of name of all episodes in a tag
     '''
 
     def get(self, request, tag, format=None):
@@ -170,5 +199,18 @@ class TagPage(APIView):
         tagged_content = ContentSerializer(tag, many=True)
 
         data['tagged_content'] = tagged_content.data
+
+        return Response(data)
+
+
+class SearchContent(APIView):
+    '''
+    to search for content by minister name, tag/Eventname, title and description
+    '''
+    def get(self, request, query, format=None):
+        data = {}
+        contents = Content.objects.filter(Q(minister__name__icontains=query) | Q(name__icontains=query) | Q(tag__name__icontains=query) | Q(description__icontains=query))
+        contents = ContentSerializer(contents, many=True)
+        data['results'] = contents.data
 
         return Response(data)
