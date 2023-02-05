@@ -141,7 +141,7 @@ class ContentPage(APIView):
         # adding main contents to api
         data['main_content'] = Main_content.data
 
-        # Quering the Content dd while fitering the for the same tag as main event
+        # Querying the Content the while filtering the for the same tag as main event
         other_Content = Content.objects.filter(tag__name=content_tag).exclude(id=id)
 
         # Serializing other content
@@ -154,6 +154,15 @@ class ContentPage(APIView):
 
 
     def post(self, request, id, format=None):
+        """
+        this is to ensure that when a content is played, the times played is incremented by one(1)
+
+        :param request: httprequest
+        :param id: collect the id of a content
+        :param format:
+        :return: a success when the content has been incremented by one(1)
+        """
+
         data = {}
         # querying main content by ID
         Main_content = Content.objects.get(id=id)
