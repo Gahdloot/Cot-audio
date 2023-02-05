@@ -80,7 +80,9 @@ class MinistersPage(APIView):
         data['All Ministers'] = ministers.data
 
 class MinisterPage(APIView):
-    '''Retruns a specific author, the authors content, and other authors'''
+    """
+    Retruns a specific author, the authors content, and other authors
+    """
 
     def get(self, request, id, format=None):
         data = {}
@@ -117,9 +119,9 @@ class MinisterPage(APIView):
 
 
 class ContentPage(APIView):
-    '''The Content page this to view the content in full, with description
+    """The Content page this to view the content in full, with description
         the contents also suggests similar content based on tags
-    '''
+    """
 
     '''
     The post method is to increment times played on content
@@ -131,7 +133,7 @@ class ContentPage(APIView):
         # quering main content by ID
         Main_content = Content.objects.get(id=id)
 
-        # creating a varible to track the tag name of the content
+        # creating a variable to track the tag name of the content
         content_tag = Main_content.tag.name
         data['content_tag'] = content_tag
 
@@ -151,7 +153,6 @@ class ContentPage(APIView):
         data['other_content_on_the_same_tag'] = other_Content.data
 
         return Response(data)
-
 
     def post(self, request, id, format=None):
         """
