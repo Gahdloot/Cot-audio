@@ -39,7 +39,7 @@ class Events(models.Model):
 
 class Content(models.Model):
     minister = models.ForeignKey(Minister, on_delete=models.CASCADE, related_name='minister')
-    name = models.CharField(max_length=240, null=False, blank=False)
+    name = models.CharField(max_length=240, null=False, blank=False, unique=True)
     content = models.FileField(upload_to='content/audio', validators=[validate_file_extension],
                                storage=VideoMediaCloudinaryStorage, null=True, blank=True)
     image = models.ImageField(upload_to='content/images')
